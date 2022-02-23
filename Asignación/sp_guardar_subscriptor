@@ -1,0 +1,46 @@
+/*
+Cree el procedimiento almacenado "sp_guardar_subscriptor" para actualizar los campos de un subscriptor existente en la base de datos.
+*/
+
+#eliminar procedimiento
+DROP procedure IF EXISTS `sp_guardar_subscriptor`;
+
+# Crear procedimiento 
+DELIMITER //
+CREATE  PROCEDURE  bd_sample.sp_guardar_subscriptor (
+	in p_id_subscriptor 	int, 
+    in p_codigo_subscriptor varchar(25),
+    in p_nombres 			varchar(25),
+    in p_apellidos 			varchar(25)
+ )
+BEGIN 
+    #definir variables 
+	declare  v_id_subscriptor int; 
+	declare  v_codigo_subscriptor varchar(25); 
+	declare  v_nombres varchar(25) ;
+	declare  v_apellidos varchar(25); 
+    
+    #asignar valores de parametros a variables 
+    set v_id_subscriptor 		= p_id_subscriptor;
+	set v_codigo_subscriptor	= p_codigo_subscriptor; 
+    set v_nombres				    = p_nombres;
+    set v_apellidos				  = p_apellidos;
+    
+    # Actualizar subscriptor 
+    update bd_sample.tbl_subscriptores
+    set codigo_subscriptor = v_codigo_subscriptor,
+		nombres = v_nombres,
+		apellidos = v_apellidos
+        where id_subscriptor =  v_id_subscriptor;
+            
+    commit;
+ END; 
+
+
+# Ejecutar procedimiento 
+CALL bd_sample.sp_guardar_subscriptor(
+	2, 					        	# p_id_subscriptor  
+	'202211111',    			# p_codigo_subscriptor 
+  'Edwin',			      	# p_nombres 			 
+  'Mayorga' 			    	#p_apellidos 	
+    );
