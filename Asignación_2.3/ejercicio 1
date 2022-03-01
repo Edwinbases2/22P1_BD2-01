@@ -36,7 +36,7 @@ BEGIN
     from bd_sample.tbl_subscriptores
 	WHERE codigo_subscriptor = v_codigo_subscriptor;
        
-    if v_codigo_subscriptor = 0 then 
+    if v_codigo_subscriptor is null then 
 		insert into bd_sample.tbl_subscriptores ( 
 			id_subscriptor, codigo_subscriptor, nombres, apellidos , edad, grupoetario
 		) values (
