@@ -1,0 +1,3 @@
+select distinct tk.idticket,tf.orden,tk.numero_random,tf.id_factura,tk.fecha_creacion as
+ Fecha_creacion_Tikeckt,tf.fecha_emision
+from tbl_tickets_promo as tk join tbl_facturas_selectas as tf on idfactura=id_factura
