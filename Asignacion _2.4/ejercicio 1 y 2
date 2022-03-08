@@ -1,4 +1,45 @@
 
+#Ejercicio 1 SP_CREAR_CADENA
+
+drop PROCEDURE SP_CREAR_CADENA;
+
+delimiter //
+create procedure SP_CREAR_CADENA(
+in p_inicio int,
+in p_final int
+)
+
+BEGIN
+    declare  i int default 0;  
+	declare  v_idFactura int default 0; 
+	declare  v_fechaEmision datetime; 
+	declare  v_idCliente int(11) ;
+
+    
+    select p_final; 
+    
+    set i = p_inicio; 
+    
+    while i < p_final + 5 do 
+		select 
+			idFactura, 	fechaEmision,	idCliente 
+		into 
+			v_idFactura, 	v_fechaEmision,	v_idCliente
+		from bd_factsv2.tbl_facturas where idFactura = i; 
+        
+        CALL bd_factsv2.SP_CREAR_CADENA(
+			v_idFactura				, # p_idFactura  
+			v_fechaEmision			, # p_fechaEmision 
+			v_idCliente				, # p_idCliente 			 
+			
+			null 
+		);
+		set i = i+5; 
+    end while;
+    
+END;
+
+
 #caso Practico numero 2
 
 #insertar Tickets
