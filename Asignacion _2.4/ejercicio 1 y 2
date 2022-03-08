@@ -1,3 +1,15 @@
+
+#caso Practico numero 2
+
+#insertar Tickets
+
+insert into tbl_tickets_promo (idfactura,numero_random,fecha_creacion)  
+select distinct id_factura,ceil(rand()*(10000-0)+1000), now() 
+from tbl_facturas_selectas where orden=30;
+
+
+#selecionar info_tickes
+
 select distinct tk.idticket,tf.orden,tk.numero_random,tf.id_factura,tk.fecha_creacion as
  Fecha_creacion_Tikeckt,tf.fecha_emision
 from tbl_tickets_promo as tk join tbl_facturas_selectas as tf on idfactura=id_factura
