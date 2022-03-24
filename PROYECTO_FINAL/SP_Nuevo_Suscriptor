@@ -1,0 +1,86 @@
+USE bd_platvideo ;
+DROP PROCEDURE IF EXISTS SP_Nuevo_Suscriptor;
+delimiter //
+CREATE PROCEDURE SP_Nuevo_Suscriptor (
+	IN p_id_suscriptor int,
+	IN p_nombres varchar(45),
+	IN p_apellidos varchar(45),
+	IN p_telefono varchar(45),
+	IN p_email varchar(45),
+	IN p_usuario varchar(45),
+	IN p_contrasena varchar(400),
+	IN p_fechanacimiento datetime,
+	IN p_edad int,
+	IN p_fecha_ingreso datetime,
+	IN p_fecha_modificacion datetime,
+	IN p_fecha_ultima_act datetime
+	#IN p_idciclo int
+)
+BEGIN
+DECLARE Dia_Ingreso int;
+DECLARE Ultimo_Dia int;
+DECLARE ciclo int;
+DECLARE ID_Ciclo int;
+
+SET Dia_Ingreso = DAY(p_fecha_ingreso);
+SET Ultimo_Dia = DAY(LAST_DAY(NOW())); #calculando el ultimo dia del mes
+SET ciclo = (Dia_Ingreso + 20) - Ultimo_Dia;
+#SELECT Dia_Ingreso,Ultimo_Dia  ,ciclo;    el siguiente ciclo es para cuando sobre pasa el ultimo dia del mes
+IF (Dia_Ingreso + 20) > Ultimo_Dia THEN 
+SET ID_Ciclo = (
+	SELECT idciclo  
+	FROM tbl_ciclos_facturacion 
+	WHERE  idciclo = (
+		SELECT MIN(idciclo) # tomando el primer registro de la misma tabla
+		FROM tbl_ciclos_facturacion
+		WHERE dia_calendario >= ciclo)
+	);
+END IF;
+# es para cuando el rago esta dentro del mismo mes
+IF (Dia_Ingreso + 20) < Ultimo_Dia THEN
+SET ID_Ciclo = (
+	SELECT idciclo  
+	FROM tbl_ciclos_facturacion 
+	WHERE  idciclo = (
+		SELECT MIN(idciclo) 
+		FROM tbl_ciclos_facturacion
+		WHERE dia_calendario >= (Dia_Ingreso + 20))  # para encontar el di del mismo mes
+	);
+
+END IF;
+#insertando el nuevo suscriptor
+	INSERT tbl_suscriptores
+	(
+	id_suscriptor,
+	nombres,
+	apellidos,
+	telefono,
+	email,
+	usuario,
+	contrasena,
+	fechanacimiento,
+	edad,
+	fecha_inrgreso ,
+	fecha_modificacion,
+	fecha_ultima_act,
+	idciclo	
+	)
+	VALUES
+	(
+	p_id_suscriptor,
+	p_nombres,
+	p_apellidos,
+	p_telefono,
+	p_email,
+	p_usuario,
+	p_contrasena,
+	p_fechanacimiento, 
+	p_edad,
+	p_fecha_ingreso,
+	p_fecha_modificacion,
+	p_fecha_ultima_act,
+	ID_Ciclo # variable calculada
+	);
+
+END//
+delimiter ;
