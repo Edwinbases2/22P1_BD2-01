@@ -1,0 +1,30 @@
+#1 Funciones almacenadas
+
+USE bd_platvideo;
+
+DROP FUNCTION IF EXISTS F_Obtener_Tarifa ;
+delimiter //
+CREATE FUNCTION F_Obtener_Tarifa (ID int, Tipo varchar(1)) RETURNS decimal(12,2) DETERMINISTIC
+BEGIN
+	DECLARE Resultado decimal (12,2);
+#funcion para devolver el valor real
+IF Tipo = 'r' THEN 
+SET Resultado =(
+	SELECT 
+		valor_real  
+	FROM tbl_tarifas
+	WHERE id_tarifa = ID);
+END IF;
+#funcion para devolve el valor porcentual
+IF Tipo = 'p' THEN
+SET Resultado = (
+	SELECT 
+		valor_procentual  
+	FROM tbl_tarifas 
+	WHERE id_tarifa = ID);
+END IF;
+#devolver resultado
+RETURN Resultado; 
+END
+//
+delimiter ;
